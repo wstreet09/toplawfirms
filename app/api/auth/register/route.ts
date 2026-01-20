@@ -1,0 +1,62 @@
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import bcrypt from "bcryptjs"
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { email, password, firstName, lastName } = body
+
+    // Validate input
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: "Email and password are required" },
+        { status: 400 }
+      )
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    })
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "User with this email already exists" },
+        { status: 400 }
+      )
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        firstName,
+        lastName,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      user,
+      message: "Account created successfully",
+    })
+  } catch (error) {
+    console.error("Registration error:", error)
+    return NextResponse.json(
+      { error: "Failed to create account" },
+      { status: 500 }
+    )
+  }
+}
