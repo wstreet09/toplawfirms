@@ -2,9 +2,10 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
+import { BlogPost } from "@prisma/client"
 
 export default async function BlogManagementPage() {
-  const posts = await prisma.blogPost.findMany({
+  const posts: BlogPost[] = await prisma.blogPost.findMany({
     orderBy: { updatedAt: "desc" },
   })
 

@@ -2,9 +2,10 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
+import { Page } from "@prisma/client"
 
 export default async function PagesManagementPage() {
-  const pages = await prisma.page.findMany({
+  const pages: Page[] = await prisma.page.findMany({
     orderBy: { updatedAt: "desc" },
   })
 
