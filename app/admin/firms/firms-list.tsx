@@ -21,7 +21,7 @@ type Firm = {
       id: string
       name: string
       code: string
-    }
+    } | null
     isPrimary: boolean
   }>
   _count: {
@@ -48,7 +48,7 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
       firm.offices.some(
         (office) =>
           office.city.toLowerCase().includes(query) ||
-          office.state.name.toLowerCase().includes(query)
+          office.state?.name.toLowerCase().includes(query)
       )
     )
   })
@@ -72,7 +72,7 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
       return [
         firm.name,
         primaryOffice?.city || "",
-        primaryOffice?.state.name || "",
+        primaryOffice?.state?.name || "",
         firm._count.offices,
         firm._count.lawyers,
         firm._count.practiceAreas,
@@ -207,7 +207,7 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
                     <div className="space-y-1 text-sm text-muted-foreground">
                       {firm.offices[0] && (
                         <p>
-                          Primary Office: {firm.offices[0].city}, {firm.offices[0].state.name}
+                          Primary Office: {firm.offices[0].city}{firm.offices[0].state ? `, ${firm.offices[0].state.name}` : ""}
                         </p>
                       )}
                       <div className="flex gap-4 mt-2">

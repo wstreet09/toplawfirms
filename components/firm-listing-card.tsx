@@ -23,7 +23,7 @@ interface FirmListingCardProps {
       state?: {
         name: string
         code: string
-      }
+      } | null
     }[]
     practiceAreas: {
       id: string

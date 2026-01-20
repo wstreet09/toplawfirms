@@ -76,7 +76,7 @@ export default async function InactiveProfilesPage() {
 
                     {firm.offices[0] && (
                       <p className="text-sm text-muted-foreground mb-2">
-                        📍 {firm.offices[0].city}, {firm.offices[0].state.name}
+                        📍 {firm.offices[0].city}{firm.offices[0].state ? `, ${firm.offices[0].state.name}` : ""}
                       </p>
                     )}
 

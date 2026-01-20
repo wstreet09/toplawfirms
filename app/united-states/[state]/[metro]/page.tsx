@@ -11,9 +11,6 @@ interface MetroPageProps {
 
 export async function generateStaticParams() {
   const metros = await prisma.metro.findMany({
-    include: {
-      state: true,
-    },
     select: {
       slug: true,
       state: {
@@ -23,7 +20,7 @@ export async function generateStaticParams() {
   })
 
   return metros.map((metro) => ({
-    state: metro.state.slug,
+    state: metro.state?.slug || "",
     metro: metro.slug,
   }))
 }

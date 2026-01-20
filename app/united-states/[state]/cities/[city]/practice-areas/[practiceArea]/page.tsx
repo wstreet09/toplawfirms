@@ -37,6 +37,7 @@ export async function generateStaticParams() {
   const cityStateMap = new Map<string, string>()
 
   offices.forEach((office) => {
+    if (!office.state) return
     const key = `${office.state.slug}:${office.city}`
     cityStateMap.set(key, office.state.slug)
   })

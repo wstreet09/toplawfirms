@@ -30,6 +30,7 @@ export async function generateStaticParams() {
   // Get unique state/city combinations
   const cityMap = new Map<string, string>()
   offices.forEach((office) => {
+    if (!office.state) return
     const key = `${office.state.slug}:${office.city}`
     cityMap.set(key, office.state.slug)
   })

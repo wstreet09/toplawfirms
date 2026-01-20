@@ -138,7 +138,7 @@ export default async function OverviewPage({ params }: OverviewPageProps) {
               <h4 className="font-medium mb-1">Primary Office</h4>
               <p className="text-sm text-muted-foreground">{primaryOffice.address}</p>
               <p className="text-sm text-muted-foreground">
-                {primaryOffice.city}, {primaryOffice.state.name} {primaryOffice.postalCode}
+                {primaryOffice.city}{primaryOffice.state ? `, ${primaryOffice.state.name}` : ""} {primaryOffice.postalCode}
               </p>
               {primaryOffice.phone && (
                 <p className="text-sm text-muted-foreground mt-1">{primaryOffice.phone}</p>
