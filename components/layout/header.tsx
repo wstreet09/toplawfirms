@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Container } from "./container"
 import { Button } from "@/components/ui/button"
 import { SearchDialog } from "@/components/search/search-dialog"
@@ -15,14 +15,23 @@ import {
 
 export function Header() {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <>
-      <header className="border-b bg-white">
+      <header className={`border-b bg-white sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
         <Container>
-          <div className="flex h-16 items-center justify-between">
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-12' : 'h-16'}`}>
             <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold">
+              <Link href="/" className={`font-bold transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'}`}>
                 Top Law Firms
               </Link>
             </div>
