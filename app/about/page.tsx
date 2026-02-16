@@ -1,42 +1,81 @@
 import Link from "next/link"
 import { Container } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
+import { Shield, Award, Users, Scale, Star, Clock, CheckCircle, Building2 } from "lucide-react"
 
 export const metadata = {
   title: "About Us | Top Law Firms",
-  description: "Learn more about Top Law Firms directory and our methodology.",
+  description: "Learn about Top Law Firms - recognizing legal excellence through rigorous peer review and comprehensive evaluation.",
 }
 
 export default function AboutPage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 md:py-32">
+      <section className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 md:py-28">
         <Container>
           <div className="max-w-5xl mx-auto text-center">
+            <p className="text-rose-500 font-semibold text-lg mb-4">
+              Recognizing Legal Excellence Since 2024
+            </p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              About <span className="text-rose-500">Top Law Firms</span>
+              Identifying the <span className="text-rose-500">Top 1%</span> of Law Firms
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed">
-              Your trusted source for finding top-ranked legal representation across the United States
+            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+              We celebrate law firms that demonstrate exceptional legal expertise, outstanding client service,
+              and a proven track record of success in their practice areas.
             </p>
           </div>
         </Container>
       </section>
 
-      {/* Our Mission Section */}
-      <section className="py-20 bg-white">
+      {/* Key Information Blocks */}
+      <section className="py-16 bg-white">
         <Container>
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center">
-              Our Mission
-            </h2>
-            <p className="text-xl leading-relaxed text-gray-700 text-center">
-              Top Law Firms is dedicated to helping individuals and businesses find the best legal
-              representation across the United States. We provide comprehensive rankings and
-              information about law firms, making it easier for you to connect with the right
-              legal expertise for your needs.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {/* Block 1 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-100 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-rose-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Verified Excellence</h3>
+              <p className="text-gray-600">
+                Only firms meeting our rigorous quality standards earn recognition
+              </p>
+            </div>
+
+            {/* Block 2 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-100 flex items-center justify-center">
+                <Scale className="w-8 h-8 text-rose-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Trusted Process</h3>
+              <p className="text-gray-600">
+                Comprehensive peer-review methodology ensures fair, unbiased evaluation
+              </p>
+            </div>
+
+            {/* Block 3 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-100 flex items-center justify-center">
+                <Award className="w-8 h-8 text-rose-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Elite Recognition</h3>
+              <p className="text-gray-600">
+                Top-tier firms earn distinction for exceptional legal practice
+              </p>
+            </div>
+
+            {/* Block 4 */}
+            <div className="text-center p-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-100 flex items-center justify-center">
+                <Users className="w-8 h-8 text-rose-500" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Client Focused</h3>
+              <p className="text-gray-600">
+                Helping individuals and businesses find the right legal representation
+              </p>
+            </div>
           </div>
         </Container>
       </section>
@@ -45,150 +84,180 @@ export default function AboutPage() {
       <section className="py-20 bg-slate-900 text-white">
         <Container>
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-              Our Methodology
-            </h2>
-
-            <div className="mb-12">
-              <p className="text-xl leading-relaxed text-center mb-12">
-                Our rankings are based on a rigorous evaluation process that includes:
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Our Selection Process
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                A rigorous 4-step methodology ensures only the most qualified firms earn recognition
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Evaluation Point 1 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">💬</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Step 1 */}
+              <div className="relative">
+                <div className="bg-slate-800 rounded-lg p-6 h-full">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white font-bold text-xl mb-4">
+                    1
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Nomination</h3>
+                  <p className="text-gray-400">
+                    Firms are nominated by clients, peers, or through our research team's identification of outstanding legal practices.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Client Feedback
-                </h3>
-                <p className="text-gray-300">
-                  Comprehensive testimonials and client satisfaction ratings
-                </p>
               </div>
 
-              {/* Evaluation Point 2 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">👥</span>
+              {/* Step 2 */}
+              <div className="relative">
+                <div className="bg-slate-800 rounded-lg p-6 h-full">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white font-bold text-xl mb-4">
+                    2
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Research & Analysis</h3>
+                  <p className="text-gray-400">
+                    Our team conducts in-depth analysis of firm credentials, case outcomes, client feedback, and professional standing.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Peer Reviews
-                </h3>
-                <p className="text-gray-300">
-                  Evaluations from respected legal professionals
-                </p>
               </div>
 
-              {/* Evaluation Point 3 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">📊</span>
+              {/* Step 3 */}
+              <div className="relative">
+                <div className="bg-slate-800 rounded-lg p-6 h-full">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white font-bold text-xl mb-4">
+                    3
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Peer Review</h3>
+                  <p className="text-gray-400">
+                    Recognized attorneys evaluate nominees in their practice areas, providing expert assessment of legal capabilities.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Firm Data
-                </h3>
-                <p className="text-gray-300">
-                  Detailed practice areas and capabilities
-                </p>
               </div>
 
-              {/* Evaluation Point 4 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">✅</span>
+              {/* Step 4 */}
+              <div className="relative">
+                <div className="bg-slate-800 rounded-lg p-6 h-full">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white font-bold text-xl mb-4">
+                    4
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Recognition</h3>
+                  <p className="text-gray-400">
+                    Firms meeting our standards receive official recognition and are featured in our directory with detailed profiles.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Track Record
-                </h3>
-                <p className="text-gray-300">
-                  Successful outcomes and case history
-                </p>
-              </div>
-
-              {/* Evaluation Point 5 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">🏆</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Recognition
-                </h3>
-                <p className="text-gray-300">
-                  Awards and standing in the legal community
-                </p>
-              </div>
-
-              {/* Evaluation Point 6 */}
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-amber-600 flex items-center justify-center">
-                  <span className="text-4xl">🔍</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">
-                  Research
-                </h3>
-                <p className="text-gray-300">
-                  In-depth analysis and verification
-                </p>
               </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Coverage Section */}
+      {/* Statistics Section */}
       <section className="py-20 bg-gray-50">
         <Container>
           <div className="max-w-5xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-              Our Coverage
+              By The Numbers
             </h2>
 
-            <div className="bg-white rounded-lg p-8 md:p-12 shadow-sm">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="aspect-square bg-gradient-to-br from-rose-400 to-rose-600 rounded-lg shadow-lg flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="text-7xl mb-4">🗺️</div>
-                      <p className="text-2xl font-bold">50 States</p>
-                      <p className="text-lg">Nationwide Coverage</p>
-                    </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <div className="text-4xl md:text-5xl font-bold text-rose-500 mb-2">5,000+</div>
+                <p className="text-gray-600 font-medium">Firms Evaluated</p>
+              </div>
+
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <div className="text-4xl md:text-5xl font-bold text-rose-500 mb-2">100+</div>
+                <p className="text-gray-600 font-medium">Practice Areas</p>
+              </div>
+
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <div className="text-4xl md:text-5xl font-bold text-rose-500 mb-2">50</div>
+                <p className="text-gray-600 font-medium">States Covered</p>
+              </div>
+
+              <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+                <div className="text-4xl md:text-5xl font-bold text-rose-500 mb-2">Top 1%</div>
+                <p className="text-gray-600 font-medium">Earn Recognition</p>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Values Section */}
+      <section className="py-20 bg-white">
+        <Container>
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Our Standards of Excellence
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                The criteria that define a Top Law Firm
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Standard 1 */}
+              <div className="flex gap-4 p-6 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center">
+                    <Star className="w-6 h-6 text-white" />
                   </div>
                 </div>
-
                 <div>
-                  <h3 className="text-2xl font-bold mb-6">
-                    Comprehensive National Directory
-                  </h3>
-                  <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                    We feature law firms across all 50 United States, covering major
-                    metropolitan areas and specialized practice areas.
+                  <h3 className="text-xl font-bold mb-2">Outstanding Client Reviews</h3>
+                  <p className="text-gray-600">
+                    Consistent positive feedback from clients demonstrating exceptional service,
+                    communication, and successful case outcomes.
                   </p>
+                </div>
+              </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold text-xl">•</span>
-                      <span className="text-gray-700">Corporate Law</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold text-xl">•</span>
-                      <span className="text-gray-700">Litigation</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold text-xl">•</span>
-                      <span className="text-gray-700">Intellectual Property</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold text-xl">•</span>
-                      <span className="text-gray-700">Real Estate</span>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <span className="text-rose-500 font-bold text-xl">•</span>
-                      <span className="text-gray-700">And Many More</span>
-                    </div>
+              {/* Standard 2 */}
+              <div className="flex gap-4 p-6 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Responsive & Accessible</h3>
+                  <p className="text-gray-600">
+                    Demonstrated commitment to client communication with timely responses
+                    and transparent case updates throughout representation.
+                  </p>
+                </div>
+              </div>
+
+              {/* Standard 3 */}
+              <div className="flex gap-4 p-6 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Proven Track Record</h3>
+                  <p className="text-gray-600">
+                    History of successful case resolutions, favorable verdicts, and effective
+                    legal strategies that deliver results for clients.
+                  </p>
+                </div>
+              </div>
+
+              {/* Standard 4 */}
+              <div className="flex gap-4 p-6 bg-gray-50 rounded-lg">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center">
+                    <Building2 className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Professional Standing</h3>
+                  <p className="text-gray-600">
+                    Recognition from peers, bar associations, and legal organizations
+                    reflecting expertise and ethical practice.
+                  </p>
                 </div>
               </div>
             </div>
@@ -200,21 +269,26 @@ export default function AboutPage() {
       <section className="py-20 bg-slate-800 text-white">
         <Container>
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
               Find Your Legal Representation
             </h2>
-            <p className="text-xl md:text-2xl leading-relaxed mb-12">
-              Start your search for top-ranked law firms across the United States
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed mb-10">
+              Browse our directory of recognized law firms or nominate a firm you believe deserves recognition.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/united-states">
-                <Button className="bg-amber-600 hover:bg-amber-700 text-white px-12 py-6 text-lg">
-                  BROWSE FIRMS
+                <Button className="bg-rose-500 hover:bg-rose-600 text-white px-10 py-6 text-lg">
+                  Browse Firms
                 </Button>
               </Link>
               <Link href="/nominate">
-                <Button variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-slate-800 px-12 py-6 text-lg">
-                  NOMINATE A FIRM
+                <Button variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-slate-800 px-10 py-6 text-lg">
+                  Nominate a Firm
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-slate-800 px-10 py-6 text-lg">
+                  Contact Us
                 </Button>
               </Link>
             </div>
