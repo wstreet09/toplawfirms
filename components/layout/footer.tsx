@@ -10,7 +10,13 @@ export function Footer() {
         <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="font-semibold mb-4">Top Law Firms</h3>
+              <Link href="/">
+                <img
+                  src="/images/logo.png"
+                  alt="Top Law Firms"
+                  className="h-12 w-auto mb-4"
+                />
+              </Link>
               <p className="text-sm text-muted-foreground">
                 Discover top-ranked law firms across the United States.
               </p>

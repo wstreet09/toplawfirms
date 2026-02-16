@@ -298,3 +298,19 @@ model User {
 
   @@index([email])
 }
+
+model Lead {
+  id           String   @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String
+  company      String?
+  jobTitle     String?
+  phone        String?
+  source       String   @default("legal-market-analysis") // Which resource they downloaded
+  createdAt    DateTime @default(now())
+
+  @@index([email])
+  @@index([source])
+  @@index([createdAt])
+}

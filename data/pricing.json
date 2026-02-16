@@ -1,0 +1,65 @@
+{
+  "tiers": [
+    {
+      "id": "visibility",
+      "name": "Visibility",
+      "description": "Appear in search when clients are looking",
+      "tagline": "Build trust without added outreach",
+      "price": "$199",
+      "icon": "🔍",
+      "highlighted": false,
+      "cta": "Get Started",
+      "ctaUrl": null,
+      "features": [
+        "Active law firm profile on Top Law Firms",
+        "Access to Award badges and recognition",
+        "SEO-enhancing backlinks to your website",
+        "Enhanced search visibility",
+        "Mobile-optimized profiles"
+      ]
+    },
+    {
+      "id": "business-development",
+      "name": "Business Development",
+      "description": "Content support and reputation strengthening",
+      "tagline": "Convert visibility into client engagement",
+      "price": "$499",
+      "icon": "📈",
+      "highlighted": true,
+      "cta": "Get Started",
+      "ctaUrl": null,
+      "features": [
+        "Everything in Visibility",
+        "Content Pro - Generate original, search-optimized content that signals authority to AI and Google",
+        "Content publishing on Top Law Firms",
+        "Press release generation tools",
+        "Concierge profile setup service",
+        "Expanded search card visibility",
+        "Featured firm placement",
+        "Priority customer support"
+      ]
+    },
+    {
+      "id": "market-leader",
+      "name": "Market Leader",
+      "description": "Strategic research partnerships and competitive advantages",
+      "tagline": "Lead your market with exclusive insights",
+      "price": "Contact Us",
+      "icon": "🏆",
+      "highlighted": false,
+      "cta": "Contact Sales",
+      "ctaUrl": null,
+      "features": [
+        "Everything in Business Development",
+        "Research PRO access with data uploader",
+        "One-on-one consultations with experts",
+        "Early rankings access",
+        "Exclusive industry webinars",
+        "Client Insights Report",
+        "Detailed client feedback data",
+        "Dedicated account manager",
+        "Custom market analysis"
+      ]
+    }
+  ]
+}

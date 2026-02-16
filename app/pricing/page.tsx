@@ -2,6 +2,8 @@ import { Container } from "@/components/layout/container"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Check } from "lucide-react"
+import fs from "fs/promises"
+import path from "path"
 
 export const metadata = {
   title: "Pricing | Top Law Firms",
@@ -12,69 +14,34 @@ export const metadata = {
   },
 }
 
-const pricingTiers = [
-  {
-    name: "Visibility",
-    description: "Appear in search when clients are looking",
-    tagline: "Build trust without added outreach",
-    price: "$199",
-    features: [
-      "Lawyer and firm profiles on Top Law Firms",
-      "Award badges and recognition",
-      "SEO-enhancing backlinks to your website",
-      "Enhanced search visibility",
-      "Mobile-optimized profiles",
-      "Basic analytics dashboard",
-    ],
-    cta: "Get Started",
-    ctaUrl: undefined,
-    highlighted: false,
-    icon: "🔍",
-  },
-  {
-    name: "Business Development",
-    description: "Content support and reputation strengthening",
-    tagline: "Convert visibility into client engagement",
-    price: "$499",
-    features: [
-      "Everything in Visibility",
-      "Content Pro - Generate original, search-optimized content that signals authority to AI and Google",
-      "Content publishing on Top Law Firms",
-      "Press release generation tools",
-      "Concierge profile setup service",
-      "Expanded search card visibility",
-      "Featured firm placement",
-      "Priority customer support",
-    ],
-    cta: "Get Started",
-    ctaUrl: undefined,
-    highlighted: true,
-    icon: "📈",
-  },
-  {
-    name: "Market Leader",
-    description: "Strategic research partnerships and competitive advantages",
-    tagline: "Lead your market with exclusive insights",
-    price: "Contact Us",
-    features: [
-      "Everything in Business Development",
-      "Research PRO access with data uploader",
-      "One-on-one consultations with experts",
-      "Early rankings access",
-      "Exclusive industry webinars",
-      "Client Insights Report",
-      "Detailed client feedback data",
-      "Dedicated account manager",
-      "Custom market analysis",
-    ],
-    cta: "Contact Sales",
-    ctaUrl: undefined,
-    highlighted: false,
-    icon: "🏆",
-  },
-]
+interface PricingTier {
+  id: string
+  name: string
+  description: string
+  tagline: string
+  price: string
+  icon: string
+  highlighted: boolean
+  cta: string
+  ctaUrl?: string | null
+  features: string[]
+}
 
-export default function PricingPage() {
+async function getPricingTiers(): Promise<PricingTier[]> {
+  try {
+    const filePath = path.join(process.cwd(), "data", "pricing.json")
+    const data = await fs.readFile(filePath, "utf-8")
+    const parsed = JSON.parse(data)
+    return parsed.tiers || []
+  } catch (error) {
+    console.error("Error reading pricing config:", error)
+    return []
+  }
+}
+
+export default async function PricingPage() {
+  const pricingTiers = await getPricingTiers()
+
   return (
     <>
       {/* Hero Section */}
@@ -96,7 +63,7 @@ export default function PricingPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {pricingTiers.map((tier, index) => (
             <Card
-              key={index}
+              key={tier.id || index}
               className={tier.highlighted ? "border-rose-500 border-2 shadow-lg relative" : ""}
             >
               {tier.highlighted && (

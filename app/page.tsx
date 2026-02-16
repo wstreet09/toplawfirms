@@ -41,20 +41,42 @@ export default async function Home() {
     orderBy: { publishedAt: 'desc' },
   })
 
+  // Fetch the latest news post (most recent published post)
+  const latestNewsPost = await prisma.blogPost.findFirst({
+    where: { published: true },
+    orderBy: { publishedAt: 'desc' },
+  })
+
+  
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="bg-gray-100 py-20 md:py-32">
+      <section className="bg-gray-100 py-20 md:py-32 relative overflow-hidden">
         <Container>
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-              Find the <span className="text-rose-500">best</span> firm for you.
-            </h1>
-            <p className="text-2xl md:text-3xl text-gray-700">
-              Research with confidence.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+                Find the firm <span className="text-rose-500">best</span><br />
+                <span className="text-rose-500">for you</span>.
+              </h1>
+              <p className="text-2xl md:text-3xl text-gray-700">
+                Research with confidence.
+              </p>
+            </div>
+            <div className="hidden lg:flex justify-end items-center">
+              <img
+                src="/images/TFL-Winners-Badge.png"
+                alt="Top Law Firms Rankings Badge"
+                className="w-80 h-auto"
+              />
+            </div>
           </div>
         </Container>
+        {/* Decorative diagonal lines */}
+        <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none hidden lg:block">
+          <div className="absolute top-12 right-12 w-px h-[120%] bg-gray-300 transform rotate-[25deg] origin-top"></div>
+          <div className="absolute top-12 right-32 w-px h-[120%] bg-gray-300 transform rotate-[25deg] origin-top"></div>
+        </div>
       </section>
 
       {/* Explore Rankings Section */}
@@ -68,7 +90,7 @@ export default async function Home() {
               <div className="h-1 w-32 bg-white"></div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
               {/* Search Form */}
               <div className="bg-white text-gray-900 p-8 rounded-lg">
                 <p className="text-xl italic mb-8">
@@ -144,20 +166,22 @@ export default async function Home() {
                 </form>
               </div>
 
-              {/* Legal Market Reports */}
-              <div>
-                <h3 className="text-3xl font-bold mb-6">Legal Market Reports</h3>
+              {/* 2026 Legal Market Analysis */}
+              <div className="flex flex-col">
+                <h3 className="text-3xl font-bold mb-6">2026 Legal Market Analysis</h3>
                 <p className="text-xl mb-8 text-gray-300">
                   Review the data, trends and insights collected in our annual global research.
                 </p>
-                {/* Placeholder for report images */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-700 h-64 rounded-lg flex items-center justify-center">
-                    <p className="text-sm text-gray-400">U.S. Report</p>
-                  </div>
-                  <div className="bg-slate-700 h-64 rounded-lg flex items-center justify-center">
-                    <p className="text-sm text-gray-400">Global Report</p>
-                  </div>
+                <div className="flex-1 flex items-end">
+                  <Link href="/legal-market-analysis" className="group block max-w-xs">
+                    <div className="bg-slate-700 rounded-lg overflow-hidden relative">
+                      <img
+                        src="/images/2026-legal-market-analysis.png"
+                        alt="2026 Legal Market Analysis"
+                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -170,26 +194,61 @@ export default async function Home() {
         <Container>
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold">Latest News</h2>
-            <Link href="/insights" className="text-amber-600 hover:underline flex items-center gap-2">
+            <Link href="/blog" className="text-amber-600 hover:underline flex items-center gap-2">
               Read more insights <span>→</span>
             </Link>
           </div>
 
-          <div className="bg-slate-800 rounded-lg overflow-hidden">
-            <div className="h-80 bg-slate-700 flex items-center justify-center">
-              {/* Placeholder for featured image */}
-              <p className="text-gray-500">Featured Image</p>
+          {latestNewsPost ? (
+            <Link href={`/blog/${latestNewsPost.slug}`} className="block group">
+              <div className="bg-slate-800 rounded-lg overflow-hidden">
+                <div className="h-80 bg-slate-700 overflow-hidden">
+                  {latestNewsPost.coverImage ? (
+                    <img
+                      src={latestNewsPost.coverImage}
+                      alt={latestNewsPost.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center">
+                      <p className="text-white text-4xl font-bold px-8 text-center">{latestNewsPost.title}</p>
+                    </div>
+                  )}
+                </div>
+                <div className="p-12 text-center">
+                  <h3 className="text-3xl md:text-4xl font-bold mb-6 group-hover:text-amber-500 transition-colors">
+                    {latestNewsPost.title}
+                  </h3>
+                  <p className="text-lg text-gray-400 mb-4">
+                    by {latestNewsPost.author}
+                    {latestNewsPost.publishedAt && (
+                      <span> • {new Date(latestNewsPost.publishedAt).toLocaleDateString()}</span>
+                    )}
+                  </p>
+                  {latestNewsPost.excerpt && (
+                    <p className="text-xl text-gray-300 max-w-4xl mx-auto">
+                      {latestNewsPost.excerpt}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="bg-slate-800 rounded-lg overflow-hidden">
+              <div className="h-80 bg-slate-700 flex items-center justify-center">
+                <p className="text-gray-500">Featured Image</p>
+              </div>
+              <div className="p-12 text-center">
+                <h3 className="text-3xl md:text-4xl font-bold mb-6">
+                  Excellence in Practice: The 2026 edition of Top Law Firms®
+                </h3>
+                <p className="text-lg text-gray-400 mb-4">by Editorial Team</p>
+                <p className="text-xl text-gray-300 max-w-4xl mx-auto">
+                  Reflecting the firms that set the standard in legal skill and service in the United States.
+                </p>
+              </div>
             </div>
-            <div className="p-12 text-center">
-              <h3 className="text-3xl md:text-4xl font-bold mb-6">
-                Excellence in Practice: The 2026 edition of Top Law Firms®
-              </h3>
-              <p className="text-lg text-gray-400 mb-4">by Editorial Team</p>
-              <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-                Reflecting the firms that set the standard in legal skill and service in the United States.
-              </p>
-            </div>
-          </div>
+          )}
         </Container>
       </section>
 

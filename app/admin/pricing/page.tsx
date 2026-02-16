@@ -17,85 +17,73 @@ interface PricingTier {
   icon: string
   highlighted: boolean
   cta: string
-  ctaUrl?: string
+  ctaUrl?: string | null
   features: string[]
 }
 
 export default function AdminPricingPage() {
-  const [tiers, setTiers] = useState<PricingTier[]>([
-    {
-      id: "visibility",
-      name: "Visibility",
-      description: "Appear in search when clients are looking",
-      tagline: "Build trust without added outreach",
-      price: "$199",
-      icon: "🔍",
-      highlighted: false,
-      cta: "Get Started",
-      features: [
-        "Lawyer and firm profiles on Top Law Firms",
-        "Award badges and recognition",
-        "SEO-enhancing backlinks to your website",
-        "Enhanced search visibility",
-        "Mobile-optimized profiles",
-        "Basic analytics dashboard",
-      ],
-    },
-    {
-      id: "business-development",
-      name: "Business Development",
-      description: "Content support and reputation strengthening",
-      tagline: "Convert visibility into client engagement",
-      price: "$499",
-      icon: "📈",
-      highlighted: true,
-      cta: "Get Started",
-      features: [
-        "Everything in Visibility",
-        "Content Pro - Generate original, search-optimized content that signals authority to AI and Google",
-        "Content publishing on Top Law Firms",
-        "Press release generation tools",
-        "Concierge profile setup service",
-        "Expanded search card visibility",
-        "Featured firm placement",
-        "Priority customer support",
-      ],
-    },
-    {
-      id: "market-leader",
-      name: "Market Leader",
-      description: "Strategic research partnerships and competitive advantages",
-      tagline: "Lead your market with exclusive insights",
-      price: "Contact Us",
-      icon: "🏆",
-      highlighted: false,
-      cta: "Contact Sales",
-      features: [
-        "Everything in Business Development",
-        "Research PRO access with data uploader",
-        "One-on-one consultations with experts",
-        "Early rankings access",
-        "Exclusive industry webinars",
-        "Client Insights Report",
-        "Detailed client feedback data",
-        "Dedicated account manager",
-        "Custom market analysis",
-      ],
-    },
-  ])
-
+  const [tiers, setTiers] = useState<PricingTier[]>([])
   const [editingTier, setEditingTier] = useState<PricingTier | null>(null)
   const [newFeature, setNewFeature] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+
+  // Load pricing data on mount
+  useEffect(() => {
+    loadPricing()
+  }, [])
+
+  const loadPricing = async () => {
+    try {
+      const response = await fetch("/api/admin/pricing")
+      const data = await response.json()
+      if (data.tiers) {
+        setTiers(data.tiers)
+      }
+    } catch (error) {
+      console.error("Error loading pricing:", error)
+      setMessage({ type: "error", text: "Failed to load pricing data" })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const savePricing = async (updatedTiers: PricingTier[]) => {
+    setSaving(true)
+    setMessage(null)
+    try {
+      const response = await fetch("/api/admin/pricing", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tiers: updatedTiers }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to save")
+      }
+
+      setMessage({ type: "success", text: "Pricing saved successfully!" })
+      setTimeout(() => setMessage(null), 3000)
+    } catch (error) {
+      console.error("Error saving pricing:", error)
+      setMessage({ type: "error", text: "Failed to save pricing data" })
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const handleEditTier = (tier: PricingTier) => {
     setEditingTier({ ...tier })
   }
 
-  const handleSaveTier = () => {
+  const handleSaveTier = async () => {
     if (!editingTier) return
 
-    setTiers(tiers.map(t => t.id === editingTier.id ? editingTier : t))
+    const updatedTiers = tiers.map(t => t.id === editingTier.id ? editingTier : t)
+    setTiers(updatedTiers)
     setEditingTier(null)
+    await savePricing(updatedTiers)
   }
 
   const handleCancelEdit = () => {
@@ -131,6 +119,16 @@ export default function AdminPricingPage() {
     })
   }
 
+  if (loading) {
+    return (
+      <Container>
+        <div className="py-8 text-center">
+          <p className="text-muted-foreground">Loading pricing data...</p>
+        </div>
+      </Container>
+    )
+  }
+
   return (
     <Container>
       <div className="py-8">
@@ -140,6 +138,12 @@ export default function AdminPricingPage() {
             Manage pricing tiers, features, and pricing displayed on the pricing page
           </p>
         </div>
+
+        {message && (
+          <div className={`mb-6 p-4 rounded-lg ${message.type === "success" ? "bg-green-50 border border-green-200 text-green-800" : "bg-red-50 border border-red-200 text-red-800"}`}>
+            {message.text}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Pricing Tiers List */}
@@ -273,7 +277,7 @@ export default function AdminPricingPage() {
                     <Input
                       id="ctaUrl"
                       value={editingTier.ctaUrl || ""}
-                      onChange={(e) => setEditingTier({ ...editingTier, ctaUrl: e.target.value })}
+                      onChange={(e) => setEditingTier({ ...editingTier, ctaUrl: e.target.value || null })}
                       placeholder="e.g., https://payment.stripe.com/..."
                     />
                     <p className="text-xs text-muted-foreground mt-1">
@@ -335,8 +339,8 @@ export default function AdminPricingPage() {
                   </div>
 
                   <div className="flex gap-2 pt-4">
-                    <Button onClick={handleSaveTier} className="flex-1">
-                      Save Changes
+                    <Button onClick={handleSaveTier} className="flex-1" disabled={saving}>
+                      {saving ? "Saving..." : "Save Changes"}
                     </Button>
                     <Button onClick={handleCancelEdit} variant="outline">
                       Cancel
@@ -353,15 +357,6 @@ export default function AdminPricingPage() {
             )}
           </div>
         </div>
-
-        <Card className="mt-8 bg-amber-50 border-amber-200">
-          <CardContent className="py-4">
-            <p className="text-sm text-amber-800">
-              <strong>Note:</strong> Changes made here are currently stored in the browser session only.
-              To persist changes, you'll need to update the pricing page file directly or implement a database-backed pricing system.
-            </p>
-          </CardContent>
-        </Card>
       </div>
     </Container>
   )

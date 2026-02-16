@@ -1,0 +1,3 @@
+Firm Name,Website,Phone,Description,Founded Year,Employee Count,Tier Level,Is Active,Is Premium,Office Address,Office City,Office State,Office Postal Code,Office Phone,Is Primary Office,Practice Areas
+"Example Law Firm LLP",https://example-law.com,(555) 123-4567,"A leading law firm specializing in corporate and litigation matters.",1990,150,1,false,false,"123 Main Street, Suite 400",New York,NY,10001,(555) 123-4567,true,"Corporate Law, Litigation, Mergers and Acquisitions"
+"Smith & Associates PC",https://smithlaw.com,(555) 987-6543,"Boutique firm focusing on intellectual property law.",2005,25,2,false,false,"456 Oak Avenue",Los Angeles,CA,90001,(555) 987-6543,true,"Intellectual Property Law, Patent Law, Technology Law"

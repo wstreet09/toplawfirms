@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Container } from "@/components/layout/container"
@@ -10,6 +10,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+interface ExistingFirm {
+  id: string
+  name: string
+  slug: string
+  isActive: boolean
+  location: string | null
+}
 
 const US_PRACTICE_AREAS = [
   "Administrative / Regulatory Law",
@@ -237,12 +245,60 @@ export default function NominatePage() {
   const [selectedPracticeAreas, setSelectedPracticeAreas] = useState<string[]>([])
   const [showPracticeDropdown, setShowPracticeDropdown] = useState(false)
 
+  // Firm lookup state
+  const [existingFirms, setExistingFirms] = useState<ExistingFirm[]>([])
+  const [isSearchingFirm, setIsSearchingFirm] = useState(false)
+  const [showFirmResults, setShowFirmResults] = useState(false)
+  const [selectedExistingFirm, setSelectedExistingFirm] = useState<ExistingFirm | null>(null)
+
+  // Debounced firm lookup
+  useEffect(() => {
+    const firmName = formData.firmName.trim()
+
+    if (firmName.length < 2) {
+      setExistingFirms([])
+      setShowFirmResults(false)
+      setSelectedExistingFirm(null)
+      return
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIsSearchingFirm(true)
+      try {
+        const response = await fetch(`/api/firms/check?name=${encodeURIComponent(firmName)}`)
+        const data = await response.json()
+        setExistingFirms(data.firms || [])
+        setShowFirmResults(data.firms && data.firms.length > 0)
+
+        // Check for exact match
+        const exactMatch = data.firms?.find(
+          (f: ExistingFirm) => f.name.toLowerCase() === firmName.toLowerCase()
+        )
+        if (exactMatch) {
+          setSelectedExistingFirm(exactMatch)
+        } else {
+          setSelectedExistingFirm(null)
+        }
+      } catch (error) {
+        console.error("Error checking firm:", error)
+      } finally {
+        setIsSearchingFirm(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [formData.firmName])
+
   // Get practice areas based on selected country
   const getPracticeAreas = () => {
     return selectedCountry === "germany" ? GERMANY_PRACTICE_AREAS : US_PRACTICE_AREAS
   }
 
   const nextStep = () => {
+    // Prevent moving forward if an existing firm is selected on Step 3
+    if (currentStep === 3 && selectedExistingFirm) {
+      return
+    }
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1)
     }
@@ -495,133 +551,6 @@ export default function NominatePage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="nominator-company" className="text-base text-muted-foreground">
-                      Company/Firm Name<span className="text-rose-500">*</span>
-                    </Label>
-                    <Input
-                      id="nominator-company"
-                      value={formData.nominatorCompany}
-                      onChange={(e) => setFormData({ ...formData, nominatorCompany: e.target.value })}
-                      className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-rose-500 bg-transparent"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="nominator-position" className="text-base text-muted-foreground">
-                      Position/Title
-                    </Label>
-                    <Input
-                      id="nominator-position"
-                      value={formData.nominatorPosition}
-                      onChange={(e) => setFormData({ ...formData, nominatorPosition: e.target.value })}
-                      className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-rose-500 bg-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="country" className="text-base text-muted-foreground block mb-2">
-                      Country
-                    </Label>
-                    <Select
-                      value={formData.nominatorCountry}
-                      onValueChange={(value) => setFormData({ ...formData, nominatorCountry: value })}
-                    >
-                      <SelectTrigger
-                        id="country"
-                        className="border-0 border-b border-gray-300 rounded-none px-0 focus:ring-0 bg-transparent"
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="united-states">United States</SelectItem>
-                        <SelectItem value="germany">Germany</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="state" className="text-base text-muted-foreground block mb-2">
-                      State/Province
-                    </Label>
-                    <Select
-                      value={formData.nominatorState}
-                      onValueChange={(value) => setFormData({ ...formData, nominatorState: value })}
-                    >
-                      <SelectTrigger
-                        id="state"
-                        className="border-0 border-b border-gray-300 rounded-none px-0 focus:ring-0 bg-transparent"
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="alabama">Alabama</SelectItem>
-                        <SelectItem value="alaska">Alaska</SelectItem>
-                        <SelectItem value="arizona">Arizona</SelectItem>
-                        <SelectItem value="arkansas">Arkansas</SelectItem>
-                        <SelectItem value="california">California</SelectItem>
-                        <SelectItem value="colorado">Colorado</SelectItem>
-                        <SelectItem value="connecticut">Connecticut</SelectItem>
-                        <SelectItem value="delaware">Delaware</SelectItem>
-                        <SelectItem value="florida">Florida</SelectItem>
-                        <SelectItem value="georgia">Georgia</SelectItem>
-                        <SelectItem value="hawaii">Hawaii</SelectItem>
-                        <SelectItem value="idaho">Idaho</SelectItem>
-                        <SelectItem value="illinois">Illinois</SelectItem>
-                        <SelectItem value="indiana">Indiana</SelectItem>
-                        <SelectItem value="iowa">Iowa</SelectItem>
-                        <SelectItem value="kansas">Kansas</SelectItem>
-                        <SelectItem value="kentucky">Kentucky</SelectItem>
-                        <SelectItem value="louisiana">Louisiana</SelectItem>
-                        <SelectItem value="maine">Maine</SelectItem>
-                        <SelectItem value="maryland">Maryland</SelectItem>
-                        <SelectItem value="massachusetts">Massachusetts</SelectItem>
-                        <SelectItem value="michigan">Michigan</SelectItem>
-                        <SelectItem value="minnesota">Minnesota</SelectItem>
-                        <SelectItem value="mississippi">Mississippi</SelectItem>
-                        <SelectItem value="missouri">Missouri</SelectItem>
-                        <SelectItem value="montana">Montana</SelectItem>
-                        <SelectItem value="nebraska">Nebraska</SelectItem>
-                        <SelectItem value="nevada">Nevada</SelectItem>
-                        <SelectItem value="new-hampshire">New Hampshire</SelectItem>
-                        <SelectItem value="new-jersey">New Jersey</SelectItem>
-                        <SelectItem value="new-mexico">New Mexico</SelectItem>
-                        <SelectItem value="new-york">New York</SelectItem>
-                        <SelectItem value="north-carolina">North Carolina</SelectItem>
-                        <SelectItem value="north-dakota">North Dakota</SelectItem>
-                        <SelectItem value="ohio">Ohio</SelectItem>
-                        <SelectItem value="oklahoma">Oklahoma</SelectItem>
-                        <SelectItem value="oregon">Oregon</SelectItem>
-                        <SelectItem value="pennsylvania">Pennsylvania</SelectItem>
-                        <SelectItem value="rhode-island">Rhode Island</SelectItem>
-                        <SelectItem value="south-carolina">South Carolina</SelectItem>
-                        <SelectItem value="south-dakota">South Dakota</SelectItem>
-                        <SelectItem value="tennessee">Tennessee</SelectItem>
-                        <SelectItem value="texas">Texas</SelectItem>
-                        <SelectItem value="utah">Utah</SelectItem>
-                        <SelectItem value="vermont">Vermont</SelectItem>
-                        <SelectItem value="virginia">Virginia</SelectItem>
-                        <SelectItem value="washington">Washington</SelectItem>
-                        <SelectItem value="west-virginia">West Virginia</SelectItem>
-                        <SelectItem value="wisconsin">Wisconsin</SelectItem>
-                        <SelectItem value="wyoming">Wyoming</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="city" className="text-base text-muted-foreground">
-                      City
-                    </Label>
-                    <Input
-                      id="city"
-                      value={formData.nominatorCity}
-                      onChange={(e) => setFormData({ ...formData, nominatorCity: e.target.value })}
-                      className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-rose-500 bg-transparent"
-                    />
-                  </div>
-
-                  <div>
                     <Label htmlFor="email" className="text-base text-muted-foreground">
                       Email<span className="text-rose-500">*</span>
                     </Label>
@@ -705,34 +634,141 @@ export default function NominatePage() {
               <div className="space-y-6">
                 <h2 className="text-3xl font-bold mb-8">Who are you nominating?</h2>
 
-                <div className="mb-6">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="text-rose-500 border-rose-500 hover:bg-rose-50"
-                  >
-                    Find a Firm
-                  </Button>
-                  <span className="ml-2 text-base">
-                    or add a new <span className="text-blue-500">firm</span>.
-                  </span>
-                </div>
-
                 <div className="space-y-6">
-                  <div>
+                  <div className="relative">
                     <Label htmlFor="firm-name" className="text-base text-muted-foreground">
                       Firm Name<span className="text-rose-500">*</span>
                     </Label>
-                    <Input
-                      id="firm-name"
-                      value={formData.firmName}
-                      onChange={(e) => setFormData({ ...formData, firmName: e.target.value })}
-                      className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-rose-500 bg-transparent"
-                      required
-                    />
+                    <div className="relative">
+                      <Input
+                        id="firm-name"
+                        value={formData.firmName}
+                        onChange={(e) => {
+                          setFormData({ ...formData, firmName: e.target.value })
+                          setSelectedExistingFirm(null)
+                        }}
+                        onFocus={() => existingFirms.length > 0 && setShowFirmResults(true)}
+                        className="border-0 border-b border-gray-300 rounded-none px-0 focus-visible:ring-0 focus-visible:border-rose-500 bg-transparent"
+                        required
+                      />
+                      {isSearchingFirm && (
+                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                          Searching...
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Firm lookup results dropdown */}
+                    {showFirmResults && existingFirms.length > 0 && !selectedExistingFirm && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                        <div className="px-4 py-2 text-sm font-medium text-muted-foreground border-b">
+                          Existing firms found:
+                        </div>
+                        {existingFirms.map((firm) => (
+                          <button
+                            key={firm.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedExistingFirm(firm)
+                              setFormData({ ...formData, firmName: firm.name })
+                              setShowFirmResults(false)
+                            }}
+                            className="w-full text-left px-4 py-3 hover:bg-gray-100 border-b last:border-b-0"
+                          >
+                            <div className="font-medium">{firm.name}</div>
+                            {firm.location && (
+                              <div className="text-sm text-muted-foreground">{firm.location}</div>
+                            )}
+                            <div className="text-xs mt-1">
+                              {firm.isActive ? (
+                                <span className="text-green-600">Active Profile</span>
+                              ) : (
+                                <span className="text-amber-600">Inactive Profile - Activation Available</span>
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowFirmResults(false)
+                            setSelectedExistingFirm(null)
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-rose-500 hover:bg-gray-100"
+                        >
+                          This is a different firm - continue with nomination
+                        </button>
+                      </div>
+                    )}
                   </div>
 
+                  {/* Existing firm notification */}
+                  {selectedExistingFirm && (
+                    <div className={`p-4 rounded-lg border ${selectedExistingFirm.isActive ? 'bg-blue-50 border-blue-200' : 'bg-amber-50 border-amber-200'}`}>
+                      {selectedExistingFirm.isActive ? (
+                        <>
+                          <h3 className="font-bold text-blue-800 mb-2">This firm already has an active profile</h3>
+                          <p className="text-sm text-blue-700 mb-4">
+                            <strong>{selectedExistingFirm.name}</strong> is already listed in our directory with a verified profile.
+                          </p>
+                          <div className="flex gap-3">
+                            <Link
+                              href={`/firms/${selectedExistingFirm.slug}/overview`}
+                              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
+                            >
+                              View Firm Profile
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedExistingFirm(null)
+                                setFormData({ ...formData, firmName: "" })
+                              }}
+                              className="px-4 py-2 text-sm text-blue-600 hover:underline"
+                            >
+                              Nominate a different firm
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="font-bold text-amber-800 mb-2">This firm has an inactive profile</h3>
+                          <p className="text-sm text-amber-700 mb-4">
+                            <strong>{selectedExistingFirm.name}</strong> is listed in our directory but their profile is not yet activated.
+                            You can activate this profile to unlock full features.
+                          </p>
+                          <div className="flex gap-3 flex-wrap">
+                            <Link
+                              href="/pricing"
+                              className="inline-flex items-center px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 text-sm font-medium"
+                            >
+                              Activate This Profile
+                            </Link>
+                            <Link
+                              href={`/search?q=${encodeURIComponent(selectedExistingFirm.name)}`}
+                              className="px-4 py-2 text-sm text-amber-700 border border-amber-300 rounded-md hover:bg-amber-100"
+                            >
+                              View Listing
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedExistingFirm(null)
+                                setFormData({ ...formData, firmName: "" })
+                              }}
+                              className="px-4 py-2 text-sm text-amber-600 hover:underline"
+                            >
+                              Nominate a different firm
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Only show rest of form if no existing firm selected or if firm doesn't exist */}
+                  {!selectedExistingFirm && (
+                    <>
                   <div>
                     <Label htmlFor="firm-address" className="text-base text-muted-foreground">
                       Street Address<span className="text-rose-500">*</span>
@@ -869,6 +905,8 @@ export default function NominatePage() {
                       required
                     />
                   </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -986,7 +1024,8 @@ export default function NominatePage() {
                 <Button
                   type="button"
                   onClick={nextStep}
-                  className="bg-transparent hover:bg-transparent text-rose-500 hover:text-rose-600"
+                  disabled={currentStep === 3 && !!selectedExistingFirm}
+                  className="bg-transparent hover:bg-transparent text-rose-500 hover:text-rose-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Continue <span className="ml-2">&#62;</span>
                 </Button>

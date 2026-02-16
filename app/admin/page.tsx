@@ -8,8 +8,8 @@ export default async function AdminDashboard() {
     await Promise.all([
       prisma.firm.count(),
       prisma.practiceArea.count(),
-      prisma.state.count(),
       prisma.nomination.count({ where: { status: "pending" } }),
+      prisma.state.count(),
     ])
 
   const stats = [

@@ -29,10 +29,14 @@ export function Header() {
     <>
       <header className={`border-b bg-white sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
         <Container>
-          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-12' : 'h-16'}`}>
+          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? 'h-16' : 'h-28'}`}>
             <div className="flex items-center">
-              <Link href="/" className={`font-bold transition-all duration-300 ${scrolled ? 'text-lg' : 'text-xl'}`}>
-                Top Law Firms
+              <Link href="/" className="transition-all duration-300">
+                <img
+                  src="/images/logo.png"
+                  alt="Top Law Firms"
+                  className={`transition-all duration-300 ${scrolled ? 'h-14' : 'h-24'} w-auto`}
+                />
               </Link>
             </div>
 
@@ -61,6 +65,12 @@ export function Header() {
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Nominate
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Contact
               </Link>
               <Button
                 variant="ghost"

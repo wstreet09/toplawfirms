@@ -3,10 +3,13 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Trash2 } from "lucide-react"
 
 type Firm = {
   id: string
@@ -32,8 +35,11 @@ type Firm = {
 }
 
 export function FirmsList({ firms }: { firms: Firm[] }) {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all")
+  const [selectedFirms, setSelectedFirms] = useState<Set<string>>(new Set())
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Filter firms based on search query and status
   const filteredFirms = firms.filter((firm) => {
@@ -102,6 +108,79 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
   const activeFirms = firms.filter((f) => f.isActive).length
   const inactiveFirms = firms.filter((f) => !f.isActive).length
 
+  // Selection handlers
+  const toggleSelectFirm = (firmId: string) => {
+    const newSelected = new Set(selectedFirms)
+    if (newSelected.has(firmId)) {
+      newSelected.delete(firmId)
+    } else {
+      newSelected.add(firmId)
+    }
+    setSelectedFirms(newSelected)
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedFirms.size === filteredFirms.length) {
+      setSelectedFirms(new Set())
+    } else {
+      setSelectedFirms(new Set(filteredFirms.map((f) => f.id)))
+    }
+  }
+
+  // Delete single firm
+  const handleDeleteFirm = async (firmId: string, firmName: string) => {
+    if (!confirm(`Are you sure you want to delete "${firmName}"? This action cannot be undone.`)) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/admin/firms/${firmId}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete firm")
+      }
+
+      router.refresh()
+    } catch (error) {
+      alert("Failed to delete firm. Please try again.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  // Delete multiple firms
+  const handleDeleteSelected = async () => {
+    if (selectedFirms.size === 0) return
+
+    const count = selectedFirms.size
+    if (!confirm(`Are you sure you want to delete ${count} firm${count > 1 ? "s" : ""}? This action cannot be undone.`)) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch("/api/admin/firms/bulk-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: Array.from(selectedFirms) }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete firms")
+      }
+
+      setSelectedFirms(new Set())
+      router.refresh()
+    } catch (error) {
+      alert("Failed to delete firms. Please try again.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -116,6 +195,16 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
           </p>
         </div>
         <div className="flex gap-2">
+          {selectedFirms.size > 0 && (
+            <Button
+              onClick={handleDeleteSelected}
+              variant="destructive"
+              disabled={isDeleting}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete {selectedFirms.size} Selected
+            </Button>
+          )}
           <Button onClick={handleExport} variant="outline">
             Export to CSV
           </Button>
@@ -127,6 +216,17 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
 
       {/* Filters */}
       <div className="flex gap-4 items-center flex-wrap">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="selectAll"
+            checked={filteredFirms.length > 0 && selectedFirms.size === filteredFirms.length}
+            onCheckedChange={toggleSelectAll}
+          />
+          <label htmlFor="selectAll" className="text-sm cursor-pointer">
+            Select All
+          </label>
+        </div>
+
         <Input
           type="text"
           placeholder="Search by firm name, city, or state..."
@@ -175,45 +275,52 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
           </Card>
         ) : (
           filteredFirms.map((firm) => (
-            <Card key={firm.id} className="hover:shadow-md transition-shadow">
+            <Card key={firm.id} className={`hover:shadow-md transition-shadow ${selectedFirms.has(firm.id) ? "ring-2 ring-rose-500" : ""}`}>
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  {firm.logoUrl && (
-                    <div className="mr-4">
-                      <Image
-                        src={firm.logoUrl}
-                        alt={`${firm.name} logo`}
-                        width={80}
-                        height={80}
-                        className="object-contain"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CardTitle className="text-xl text-rose-500">
-                        {firm.name}
-                      </CardTitle>
-                      {firm.isActive ? (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-                          Inactive
-                        </span>
-                      )}
-                    </div>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      {firm.offices[0] && (
-                        <p>
-                          Primary Office: {firm.offices[0].city}{firm.offices[0].state ? `, ${firm.offices[0].state.name}` : ""}
-                        </p>
-                      )}
-                      <div className="flex gap-4 mt-2">
-                        <span>{firm._count.offices} offices</span>
-                        <span>{firm._count.lawyers} lawyers</span>
-                        <span>{firm._count.practiceAreas} practice areas</span>
+                  <div className="flex items-start gap-3">
+                    <Checkbox
+                      checked={selectedFirms.has(firm.id)}
+                      onCheckedChange={() => toggleSelectFirm(firm.id)}
+                      className="mt-1"
+                    />
+                    {firm.logoUrl && (
+                      <div className="mr-2">
+                        <Image
+                          src={firm.logoUrl}
+                          alt={`${firm.name} logo`}
+                          width={80}
+                          height={80}
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CardTitle className="text-xl text-rose-500">
+                          {firm.name}
+                        </CardTitle>
+                        {firm.isActive ? (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
+                      <div className="space-y-1 text-sm text-muted-foreground">
+                        {firm.offices[0] && (
+                          <p>
+                            Primary Office: {firm.offices[0].city}{firm.offices[0].state ? `, ${firm.offices[0].state.name}` : ""}
+                          </p>
+                        )}
+                        <div className="flex gap-4 mt-2">
+                          <span>{firm._count.offices} offices</span>
+                          <span>{firm._count.lawyers} lawyers</span>
+                          <span>{firm._count.practiceAreas} practice areas</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -228,6 +335,15 @@ export function FirmsList({ firms }: { firms: Firm[] }) {
                         View
                       </Button>
                     </Link>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteFirm(firm.id, firm.name)}
+                      disabled={isDeleting}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardHeader>

@@ -43,3 +43,7 @@ next-env.d.ts
 /generated/prisma
 
 /lib/generated/prisma
+
+# uploads (keep folder but ignore contents)
+/public/uploads/*
+!/public/uploads/.gitkeep

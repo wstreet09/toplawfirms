@@ -406,8 +406,8 @@ export function FirmEditForm({ firm, states, allPracticeAreas }: FirmEditFormPro
                 </Label>
                 <Input
                   id="logoUrl"
-                  type="url"
-                  placeholder="https://example.com/logo.png"
+                  type="text"
+                  placeholder="https://example.com/logo.png or /uploads/..."
                   value={formData.logoUrl}
                   onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
                 />
