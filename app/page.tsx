@@ -51,32 +51,26 @@ export default async function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="bg-gray-100 py-20 md:py-32 relative overflow-hidden">
+      <section className="bg-gray-100 py-16 md:py-24 relative overflow-hidden">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="flex items-center justify-center gap-16 md:gap-24 lg:gap-32 px-8 md:px-16 lg:px-24">
             <div>
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-                Find the firm <span className="text-rose-500">best</span><br />
-                <span className="text-rose-500">for you</span>.
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
+                Recognizing <span className="text-rose-500">Legal Excellence</span>.
               </h1>
-              <p className="text-2xl md:text-3xl text-gray-700">
-                Research with confidence.
+              <p className="text-lg md:text-xl text-gray-700 max-w-lg">
+                Top Law Firms honors exceptional lawyers and firms who demonstrate superior skill, integrity, and measurable impact in the legal profession.
               </p>
             </div>
-            <div className="hidden lg:flex justify-end items-center">
+            <div className="hidden lg:flex items-center">
               <img
-                src="/images/TFL-Winners-Badge.png"
+                src="/images/TFL-Winner-Badge.png"
                 alt="Top Law Firms Rankings Badge"
-                className="w-80 h-auto"
+                className="w-52 h-auto"
               />
             </div>
           </div>
         </Container>
-        {/* Decorative diagonal lines */}
-        <div className="absolute top-0 right-0 w-1/2 h-full pointer-events-none hidden lg:block">
-          <div className="absolute top-12 right-12 w-px h-[120%] bg-gray-300 transform rotate-[25deg] origin-top"></div>
-          <div className="absolute top-12 right-32 w-px h-[120%] bg-gray-300 transform rotate-[25deg] origin-top"></div>
-        </div>
       </section>
 
       {/* Explore Rankings Section */}

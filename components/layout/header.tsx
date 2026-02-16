@@ -33,9 +33,9 @@ export function Header() {
             <div className="flex items-center">
               <Link href="/" className="transition-all duration-300">
                 <img
-                  src="/images/logo.png"
+                  src="/images/tfl-logo.png"
                   alt="Top Law Firms"
-                  className={`transition-all duration-300 ${scrolled ? 'h-14' : 'h-24'} w-auto`}
+                  className={`transition-all duration-300 ${scrolled ? 'h-7' : 'h-12'} w-auto`}
                 />
               </Link>
             </div>

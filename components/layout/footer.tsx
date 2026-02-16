@@ -12,7 +12,7 @@ export function Footer() {
             <div>
               <Link href="/">
                 <img
-                  src="/images/logo.png"
+                  src="/images/tfl-logo.png"
                   alt="Top Law Firms"
                   className="h-12 w-auto mb-4"
                 />
